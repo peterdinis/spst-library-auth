@@ -27,6 +27,11 @@ export class AuthService {
     const user = await this.prismaService.user.findFirst({
       where: {
         email: loginDto.email,
+        AND: {
+          isActive: {
+            not: false
+          }
+        }
       },
     });
 
@@ -64,7 +69,7 @@ export class AuthService {
   async findOneByEmail(email: string) {
     const oneUser = await this.prismaService.user.findFirst({
       where: {
-        email
+        email,
       },
     });
 
@@ -135,7 +140,7 @@ export class AuthService {
       username: user.email,
       sub: {
         name: user.name,
-      },
+      }
     };
 
     return {
@@ -176,17 +181,17 @@ export class AuthService {
     const findOneUser = await this.findOneByEmail(updateDto.email);
 
     const updateUser = await this.prismaService.user.update({
-        where: {
-            id: findOneUser.id
-        },
+      where: {
+        id: findOneUser.id,
+      },
 
-        data: {
-            ...updateDto
-        }
+      data: {
+        ...updateDto,
+      },
     });
 
-    if(!updateUser) {
-        throw new ForbiddenException("Uprava zlyhala");
+    if (!updateUser) {
+      throw new ForbiddenException('Uprava zlyhala');
     }
 
     return updateUser;
@@ -197,14 +202,57 @@ export class AuthService {
 
     const deleteAccount = await this.prismaService.user.delete({
       where: {
-        id: findOneUser.id
-      }
+        id: findOneUser.id,
+      },
     });
 
-    if(!deleteAccount) {
-      throw new ConflictException("Nepodarilo sa zmazať účet");
+    if (!deleteAccount) {
+      throw new ConflictException('Nepodarilo sa zmazať účet');
     }
 
     return deleteAccount;
+  }
+
+  async deactivateAccount(accountId: string) {
+    const findOneUser = await this.findOneUser(accountId);
+
+    const deactivateAccount = await this.prismaService.user.update({
+      where: {
+        id: findOneUser.id,
+      },
+
+      data: {
+        isActive: false,
+      },
+    });
+
+    if (!deactivateAccount) {
+      throw new ConflictException('Nepodarilo sa deaktivovať účet');
+    }
+
+    return deactivateAccount;
+  }
+
+  async makeAccountAdmin(accountId: string) {
+    const findOneUser = await this.findOneUser(accountId);
+
+    if(findOneUser.role === "STUDENT") {
+      throw new BadRequestException("Študent nemôže mať admin práva");
+    }
+
+    const updateAdminRights = await this.prismaService.user.update({
+      where: {
+        id: findOneUser.id
+      },
+      data: {
+        hasAdminRights: true
+      }
+    });
+
+    return updateAdminRights;
+  }
+
+  async removeAdminRights(accountId: string) {
+
   }
 }

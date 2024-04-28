@@ -1,7 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { ViewUserDto } from './dto/view-user-dto';
+import { CreateUserDto } from './dto/create-user-dto';
+import { UpdateUserDto } from './dto/update-user-dto';
 
 @ApiTags("Auth endpoints")
 @Controller('auth')
@@ -9,7 +11,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @ApiOperation({
-        summary: "Return all users"
+        summary: "Get all users"
     })
     @ApiOkResponse({
         type: [ViewUserDto]
@@ -20,7 +22,7 @@ export class AuthController {
     }
 
     @ApiOperation({
-        summary: "Find one user by id"
+        summary: "Get one user by id"
     })
     @ApiOkResponse({
         type: ViewUserDto
@@ -31,10 +33,10 @@ export class AuthController {
     }
 
     @ApiOperation({
-        summary: "Find all students"
+        summary: "Get all students"
     })
     @ApiOkResponse({
-        type: ViewUserDto
+        type: [ViewUserDto]
     })
     @Get("/users/students")
     async findAllStudents() {
@@ -42,13 +44,68 @@ export class AuthController {
     }
 
     @ApiOperation({
-        summary: "Find all teachers"
+        summary: "Get all teachers"
     })
     @ApiOkResponse({
-        type: ViewUserDto
+        type: [ViewUserDto]
     })
     @Get("/users/teachers")
     async findAllTeachers() {
         return this.authService.findAllTeachers();
+    }
+
+    @ApiOperation({
+        summary: "Create a new user"
+    })
+    @ApiOkResponse({
+        type: ViewUserDto
+    })
+    @Post("/users")
+    async createNewUser(@Body() registerDto: CreateUserDto) {
+        return this.authService.createNewUser(registerDto);
+    }
+
+    @ApiOperation({
+        summary: "Update user account"
+    })
+    @ApiOkResponse({
+        type: ViewUserDto
+    })
+    @Put("/users/:id")
+    async updateAccount(@Body() updateDto: UpdateUserDto) {
+        return this.authService.updateAccount(updateDto);
+    }
+
+    @ApiOperation({
+        summary: "Delete user account"
+    })
+    @ApiOkResponse({
+        type: ViewUserDto
+    })
+    @Delete("/users/:id")
+    async deleteAccount(@Param("id") id: string) {
+        return this.authService.deleteAccount(id);
+    }
+
+    @ApiOperation({
+        summary: "Deactivate user account"
+    })
+    @ApiOkResponse({
+        type: ViewUserDto
+    })
+    @Patch("/users/:id/deactivate")
+    async deactivateAccount(@Param("id") id: string) {
+        return this.authService.deactivateAccount(id);
+    }
+
+    @ApiOperation({
+        summary: "Make user account admin"
+    })
+    @ApiOkResponse({
+        type: ViewUserDto
+    })
+    @Patch("/users/:id/make-admin")
+    async makeAccountAdmin(@Param("id") id: string) {
+        return this.authService.makeAccountAdmin(id);
     }
 }
