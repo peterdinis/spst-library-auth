@@ -2,13 +2,13 @@ import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags("Example")
+@ApiTags('Example')
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @ApiOperation({
-    description: "Testing endpoint for our auth server"
+    description: 'Testing endpoint for our auth server',
   })
   @ApiOkResponse()
   @Get()

@@ -29,9 +29,9 @@ export class AuthService {
         email: loginDto.email,
         AND: {
           isActive: {
-            not: false
-          }
-        }
+            not: false,
+          },
+        },
       },
     });
 
@@ -140,7 +140,7 @@ export class AuthService {
       username: user.email,
       sub: {
         name: user.name,
-      }
+      },
     };
 
     return {
@@ -236,23 +236,21 @@ export class AuthService {
   async makeAccountAdmin(accountId: string) {
     const findOneUser = await this.findOneUser(accountId);
 
-    if(findOneUser.role === "STUDENT") {
-      throw new BadRequestException("Študent nemôže mať admin práva");
+    if (findOneUser.role === 'STUDENT') {
+      throw new BadRequestException('Študent nemôže mať admin práva');
     }
 
     const updateAdminRights = await this.prismaService.user.update({
       where: {
-        id: findOneUser.id
+        id: findOneUser.id,
       },
       data: {
-        hasAdminRights: true
-      }
+        hasAdminRights: true,
+      },
     });
 
     return updateAdminRights;
   }
 
-  async removeAdminRights(accountId: string) {
-
-  }
+  async removeAdminRights(accountId: string) {}
 }
