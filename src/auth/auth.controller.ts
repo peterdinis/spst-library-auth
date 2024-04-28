@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { ViewUserDto } from './dto/view-user-dto';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { LoginDto } from './dto/login-user-dto';
 
 @ApiTags("Auth endpoints")
 @Controller('auth')
@@ -57,12 +58,23 @@ export class AuthController {
     @ApiOperation({
         summary: "Create a new user"
     })
-    @ApiOkResponse({
+    @ApiCreatedResponse({
         type: ViewUserDto
     })
     @Post("/users")
     async createNewUser(@Body() registerDto: CreateUserDto) {
         return this.authService.createNewUser(registerDto);
+    }
+
+    @ApiOperation({
+        summary: "Login new user"
+    })
+    @ApiCreatedResponse({
+        type: LoginDto
+    })
+    @Post("/users/login")
+    async loginUser(@Body() loginDto: LoginDto) {
+        return await this.authService.login(loginDto);
     }
 
     @ApiOperation({
