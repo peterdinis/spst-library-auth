@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -11,6 +12,7 @@ import { hash, compare } from 'bcrypt';
 import { LoginDto } from './dto/login-user-dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { UpdateUserDto } from './dto/update-user-dto';
 
 const EXPIRE_TIME = 20 * 1000;
 
@@ -54,6 +56,20 @@ export class AuthService {
 
     if (!oneUser) {
       throw new NotFoundException('Používateľa s týmto id som nenašiel');
+    }
+
+    return oneUser;
+  }
+
+  async findOneByEmail(email: string) {
+    const oneUser = await this.prismaService.user.findFirst({
+      where: {
+        email
+      },
+    });
+
+    if (!oneUser) {
+      throw new NotFoundException('Používateľa s týmto emailom som nenašiel');
     }
 
     return oneUser;
@@ -113,7 +129,30 @@ export class AuthService {
     return result;
   }
 
-  async loginUser() {}
+  async login(dto: LoginDto) {
+    const user = await this.validateUser(dto);
+    const payload = {
+      username: user.email,
+      sub: {
+        name: user.name,
+      },
+    };
+
+    return {
+      user,
+      backendTokens: {
+        accessToken: await this.jwtService.signAsync(payload, {
+          expiresIn: '20s',
+          secret: process.env.jwtSecretKey,
+        }),
+        refreshToken: await this.jwtService.signAsync(payload, {
+          expiresIn: '7d',
+          secret: process.env.jwtRefreshTokenKey,
+        }),
+        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
+      },
+    };
+  }
 
   async refreshToken(user: User) {
     const payload = {
@@ -131,5 +170,25 @@ export class AuthService {
       }),
       expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
+  }
+
+  async updateAccount(updateDto: UpdateUserDto) {
+    const findOneUser = await this.findOneByEmail(updateDto.email);
+
+    const updateUser = await this.prismaService.user.update({
+        where: {
+            id: findOneUser.id
+        },
+
+        data: {
+            ...updateDto
+        }
+    });
+
+    if(!updateUser) {
+        throw new ForbiddenException("Uprava zlyhala");
+    }
+
+    return updateUser;
   }
 }
