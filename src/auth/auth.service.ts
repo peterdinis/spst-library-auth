@@ -252,5 +252,22 @@ export class AuthService {
     return updateAdminRights;
   }
 
-  async removeAdminRights(accountId: string) {}
+  async removeAdminRights(accountId: string) {
+    const findOneUser = await this.findOneUser(accountId);
+
+    if (findOneUser.role === 'STUDENT') {
+      throw new BadRequestException('Chyba Študent nemôže mať admin práva');
+    }
+
+    const updateAdminRights = await this.prismaService.user.update({
+      where: {
+        id: findOneUser.id,
+      },
+      data: {
+        hasAdminRights: false
+      },
+    });
+
+    return updateAdminRights;
+  }
 }
