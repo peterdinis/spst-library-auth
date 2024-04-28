@@ -20,7 +20,7 @@ model User {
   email     String
   password  String
   role      String   @default("STUDENT")
-  isActive  String 
+  isActive  Boolean 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
