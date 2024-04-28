@@ -29,4 +29,26 @@ export class AuthController {
     async getOneUser(@Param("id") id: string) {
         return this.authService.findOneUser(id);
     }
+
+    @ApiOperation({
+        summary: "Find all students"
+    })
+    @ApiOkResponse({
+        type: ViewUserDto
+    })
+    @Get("/users/students")
+    async findAllStudents() {
+        return this.authService.findAllStudents();
+    }
+
+    @ApiOperation({
+        summary: "Find all teachers"
+    })
+    @ApiOkResponse({
+        type: ViewUserDto
+    })
+    @Get("/users/teachers")
+    async findAllTeachers() {
+        return this.authService.findAllTeachers();
+    }
 }

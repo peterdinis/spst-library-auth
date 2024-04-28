@@ -191,4 +191,20 @@ export class AuthService {
 
     return updateUser;
   }
+
+  async deleteAccount(accountId: string) {
+    const findOneUser = await this.findOneUser(accountId);
+
+    const deleteAccount = await this.prismaService.user.delete({
+      where: {
+        id: findOneUser.id
+      }
+    });
+
+    if(!deleteAccount) {
+      throw new ConflictException("Nepodarilo sa zmazať účet");
+    }
+
+    return deleteAccount;
+  }
 }
