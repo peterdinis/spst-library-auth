@@ -5,7 +5,7 @@ import { AppModule } from './app/app.module';
 
 async function bootstrap() {
   const app = (await NestFactory.create(AppModule)) as INestApplication;
-
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Spšt Knižnica AUTH')
     .setDescription('Autentifikačný server pre spst knižnica')
