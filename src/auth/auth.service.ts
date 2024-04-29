@@ -14,6 +14,7 @@ import { LoginDto } from './dto/login-user-dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { UsersService } from './users.service';
 
 const EXPIRE_TIME = 20 * 1000;
 
@@ -22,6 +23,7 @@ export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly usersService: UsersService
   ) {}
 
   async validateUser(loginDto: LoginDto) {
@@ -36,9 +38,7 @@ export class AuthService {
       },
     });
 
-    const checkPasswords = compare(loginDto.password, user.password);
-
-    console.log("Check Passwords", checkPasswords);
+    // const checkPasswords = compare(loginDto.password, user.password);
 
     if (user) {
       const { password, ...result } = user;
@@ -55,34 +55,6 @@ export class AuthService {
     }
 
     return allUsers;
-  }
-
-  async findOneUser(id: string) {
-    const oneUser = await this.prismaService.user.findFirst({
-      where: {
-        id,
-      },
-    });
-
-    if (!oneUser) {
-      throw new NotFoundException('Používateľa s týmto id som nenašiel');
-    }
-
-    return oneUser;
-  }
-
-  async findOneByEmail(email: string) {
-    const oneUser = await this.prismaService.user.findFirst({
-      where: {
-        email,
-      },
-    });
-
-    if (!oneUser) {
-      throw new NotFoundException('Používateľa s týmto emailom som nenašiel');
-    }
-
-    return oneUser;
   }
 
   async findAllStudents() {
@@ -181,7 +153,7 @@ export class AuthService {
   }
 
   async updateAccount(updateDto: UpdateUserDto) {
-    const findOneUser = await this.findOneByEmail(updateDto.email);
+    const findOneUser = await this.usersService.findOneByEmail(updateDto.email);
 
     const updateUser = await this.prismaService.user.update({
       where: {
@@ -201,7 +173,7 @@ export class AuthService {
   }
 
   async deleteAccount(accountId: string) {
-    const findOneUser = await this.findOneUser(accountId);
+    const findOneUser = await this.usersService.findOneUser(accountId);
 
     const deleteAccount = await this.prismaService.user.delete({
       where: {
@@ -217,7 +189,7 @@ export class AuthService {
   }
 
   async deactivateAccount(accountId: string) {
-    const findOneUser = await this.findOneUser(accountId);
+    const findOneUser = await this.usersService.findOneUser(accountId);
 
     const deactivateAccount = await this.prismaService.user.update({
       where: {
@@ -237,7 +209,7 @@ export class AuthService {
   }
 
   async makeAccountAdmin(accountId: string) {
-    const findOneUser = await this.findOneUser(accountId);
+    const findOneUser = await this.usersService.findOneUser(accountId);
 
     if (findOneUser.role === 'STUDENT') {
       throw new BadRequestException('Študent nemôže mať admin práva');
@@ -256,7 +228,7 @@ export class AuthService {
   }
 
   async removeAdminRights(accountId: string) {
-    const findOneUser = await this.findOneUser(accountId);
+    const findOneUser = await this.usersService.findOneUser(accountId);
 
     if (findOneUser.role === 'STUDENT') {
       throw new BadRequestException('Chyba Študent nemôže mať admin práva');
