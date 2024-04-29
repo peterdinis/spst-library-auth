@@ -23,11 +23,15 @@ import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { LoginDto } from './dto/login-user-dto';
 import { RefreshJwtGuard } from './guards/refresh.guard';
+import { UsersService } from './users.service';
 
 @ApiTags('Auth endpoints')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService
+  ) {}
 
   @ApiOperation({
     summary: 'Get all users',
@@ -48,7 +52,7 @@ export class AuthController {
   })
   @Get('/users/:id')
   async getOneUser(@Param('id') id: string) {
-    return this.authService.findOneUser(id);
+    return this.userService.findOneUser(id);
   }
 
   @ApiOperation({
@@ -71,6 +75,17 @@ export class AuthController {
   @Get('/users/teachers')
   async findAllTeachers() {
     return this.authService.findAllTeachers();
+  }
+
+  @ApiOperation({
+    summary: 'Get all admins',
+  })
+  @ApiOkResponse({
+    type: [ViewUserDto],
+  })
+  @Get('/users/admins')
+  async findAllAdmins() {
+    return this.authService.findAllAdmins();
   }
 
   @ApiOperation({

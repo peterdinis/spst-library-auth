@@ -36,7 +36,11 @@ export class AuthService {
       },
     });
 
-    // const checkPasswords = compare(loginDto.password, user.password);
+    const checkPasswords = compare(loginDto.password, user.password);
+
+    if(!checkPasswords) {
+      throw new ForbiddenException("Heslá sa nezhodujú");
+    }
 
     if (user) {
       const { password, ...result } = user;
@@ -63,15 +67,7 @@ export class AuthService {
   }
 
   async createNewUser(registerDto: CreateUserDto) {
-    const newUser = await this.prismaService.user.findFirst({
-      where: {
-        email: registerDto.email,
-      },
-    });
-
-    if (newUser) {
-      throw new ConflictException('Používateľ s týmto emailom existuje');
-    }
+    await this.usersService.findOneByEmail(registerDto.email);
 
     const salt = crypto.randomBytes(16).toString('hex');
 
