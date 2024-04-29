@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user-dto';
-import {compare } from 'bcrypt';
-import * as crypto from "crypto";
+import { compare } from 'bcrypt';
+import * as crypto from 'crypto';
 import { LoginDto } from './dto/login-user-dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
@@ -23,7 +23,7 @@ export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
   ) {}
 
   async validateUser(loginDto: LoginDto) {
@@ -94,15 +94,17 @@ export class AuthService {
       throw new ConflictException('Používateľ s týmto emailom existuje');
     }
 
-    const salt = crypto.randomBytes(16).toString("hex");
+    const salt = crypto.randomBytes(16).toString('hex');
 
-    const hash = crypto.pbkdf2Sync(registerDto.password, salt, 1000, 64, "sha512").toString("hex");
+    const hash = crypto
+      .pbkdf2Sync(registerDto.password, salt, 1000, 64, 'sha512')
+      .toString('hex');
 
     const addNewUser = await this.prismaService.user.create({
       data: {
         ...registerDto,
         isActive: true,
-        password: hash
+        password: hash,
       },
     });
 
@@ -123,11 +125,11 @@ export class AuthService {
       backendTokens: {
         accessToken: await this.jwtService.signAsync(user, {
           expiresIn: '20s',
-          secret: process.env.JWT_SECRET as unknown as string
+          secret: process.env.JWT_SECRET as unknown as string,
         }),
         refreshToken: await this.jwtService.signAsync(user, {
           expiresIn: '7d',
-          secret: process.env.JWT_SECRET as unknown as string
+          secret: process.env.JWT_SECRET as unknown as string,
         }),
         expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
       },
@@ -239,7 +241,7 @@ export class AuthService {
         id: findOneUser.id,
       },
       data: {
-        hasAdminRights: false
+        hasAdminRights: false,
       },
     });
 

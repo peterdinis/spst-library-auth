@@ -6,7 +6,13 @@ import { CreateUserDto } from './dto/create-user-dto';
 import { LoginDto } from './dto/login-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { User } from '@prisma/client';
-import { BadRequestException, ConflictException, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { hash, compare } from 'bcrypt';
 
 describe('AuthService', () => {
@@ -50,27 +56,47 @@ describe('AuthService', () => {
 
   describe('validateUser', () => {
     it('should validate user credentials and return user if valid', async () => {
-      const loginDto: LoginDto = { email: 'test@example.com', password: 'password' };
-      const user = { id: '1', name: 'Test User', email: 'test@example.com', password: await hash('password', 10) };
+      const loginDto: LoginDto = {
+        email: 'test@example.com',
+        password: 'password',
+      };
+      const user = {
+        id: '1',
+        name: 'Test User',
+        email: 'test@example.com',
+        password: await hash('password', 10),
+      };
       jest.spyOn(prismaService.user, 'findFirst').mockResolvedValue(user);
       jest.spyOn(compare, 'compare').mockResolvedValue(true);
 
       const result = await service.validateUser(loginDto);
 
-      expect(result).toEqual({ id: '1', name: 'Test User', email: 'test@example.com' });
+      expect(result).toEqual({
+        id: '1',
+        name: 'Test User',
+        email: 'test@example.com',
+      });
     });
 
     it('should throw UnauthorizedException if credentials are invalid', async () => {
-      const loginDto: LoginDto = { email: 'test@example.com', password: 'wrongpassword' };
+      const loginDto: LoginDto = {
+        email: 'test@example.com',
+        password: 'wrongpassword',
+      };
       jest.spyOn(prismaService.user, 'findFirst').mockResolvedValue(null);
 
-      await expect(service.validateUser(loginDto)).rejects.toThrowError(UnauthorizedException);
+      await expect(service.validateUser(loginDto)).rejects.toThrowError(
+        UnauthorizedException,
+      );
     });
   });
 
   describe('getAllUsers', () => {
     it('should return all users', async () => {
-      const users = [{ id: '1', name: 'User 1' }, { id: '2', name: 'User 2' }];
+      const users = [
+        { id: '1', name: 'User 1' },
+        { id: '2', name: 'User 2' },
+      ];
       jest.spyOn(prismaService.user, 'findMany').mockResolvedValue(users);
 
       const result = await service.getAllUsers();
@@ -81,7 +107,9 @@ describe('AuthService', () => {
     it('should throw NotFoundException if no users found', async () => {
       jest.spyOn(prismaService.user, 'findMany').mockResolvedValue([]);
 
-      await expect(service.getAllUsers()).rejects.toThrowError(NotFoundException);
+      await expect(service.getAllUsers()).rejects.toThrowError(
+        NotFoundException,
+      );
     });
   });
 
