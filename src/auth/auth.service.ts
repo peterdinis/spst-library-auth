@@ -8,7 +8,8 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user-dto';
-import { hash, compare } from 'bcrypt';
+import {compare } from 'bcrypt';
+import * as crypto from "crypto";
 import { LoginDto } from './dto/login-user-dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
@@ -117,11 +118,15 @@ export class AuthService {
       throw new ConflictException('Používateľ s týmto emailom existuje');
     }
 
+    const salt = crypto.randomBytes(16).toString("hex");
+
+    const hash = crypto.pbkdf2Sync(registerDto.password, salt, 1000, 64, "sha512").toString("hex");
+
     const addNewUser = await this.prismaService.user.create({
       data: {
         ...registerDto,
         isActive: true,
-        password: hash(registerDto.password, 10),
+        password: hash
       },
     });
 
