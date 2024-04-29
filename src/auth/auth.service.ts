@@ -36,7 +36,11 @@ export class AuthService {
       },
     });
 
-    if (user && (await compare(loginDto.password, user.password))) {
+    const checkPasswords = compare(loginDto.password, user.password);
+
+    console.log("Check Passwords", checkPasswords);
+
+    if (user) {
       const { password, ...result } = user;
       return result;
     } else {
@@ -147,11 +151,11 @@ export class AuthService {
       backendTokens: {
         accessToken: await this.jwtService.signAsync(user, {
           expiresIn: '20s',
-          secret: process.env.jwtSecretKey,
+          secret: process.env.JWT_SECRET as unknown as string
         }),
         refreshToken: await this.jwtService.signAsync(user, {
           expiresIn: '7d',
-          secret: process.env.jwtRefreshTokenKey,
+          secret: process.env.JWT_SECRET as unknown as string
         }),
         expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
       },
