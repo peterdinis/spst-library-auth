@@ -36,7 +36,11 @@ export class AuthService {
       },
     });
 
-    if (user && (await compare(loginDto.password, user.password))) {
+    const checkPasswords = compare(loginDto.password, user.password);
+
+    console.log("Check Passwords", checkPasswords);
+
+    if (user) {
       const { password, ...result } = user;
       return result;
     } else {
