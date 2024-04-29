@@ -141,21 +141,15 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     const user = await this.validateUser(dto);
-    const payload = {
-      username: user.email,
-      sub: {
-        name: user.name,
-      },
-    };
 
     return {
       user,
       backendTokens: {
-        accessToken: await this.jwtService.signAsync(payload, {
+        accessToken: await this.jwtService.signAsync(user, {
           expiresIn: '20s',
           secret: process.env.jwtSecretKey,
         }),
-        refreshToken: await this.jwtService.signAsync(payload, {
+        refreshToken: await this.jwtService.signAsync(user, {
           expiresIn: '7d',
           secret: process.env.jwtRefreshTokenKey,
         }),
