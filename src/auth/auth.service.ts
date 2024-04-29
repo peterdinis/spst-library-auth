@@ -3,7 +3,6 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -15,8 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { UsersService } from './users.service';
-
-const EXPIRE_TIME = 20 * 1000;
+import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 
 @Injectable()
 export class AuthService {
@@ -49,38 +47,19 @@ export class AuthService {
   }
 
   async getAllUsers() {
-    const allUsers = await this.prismaService.user.findMany();
-    if (!allUsers) {
-      throw new NotFoundException('Nenašiel som žiadných ľudí');
-    }
-
-    return allUsers;
+    return this.usersService.findAllUsers();
   }
 
   async findAllStudents() {
-    const allStudents = await this.prismaService.user.findMany({
-      where: {
-        role: 'STUDENT',
-      },
-    });
-    if (!allStudents) {
-      throw new NotFoundException('Nenašiel som žiadných študentov');
-    }
-
-    return allStudents;
+    return this.usersService.findAllWithRole(STUDENT);
   }
 
   async findAllTeachers() {
-    const allTeachers = await this.prismaService.user.findMany({
-      where: {
-        role: 'TEACHER',
-      },
-    });
-    if (!allTeachers) {
-      throw new NotFoundException('Nenašiel som žiadných učiteľov');
-    }
+    return this.usersService.findAllWithRole(TEACHER);
+  }
 
-    return allTeachers;
+  async findAllAdmins() {
+    return this.usersService.findAllWithRole(ADMIN);
   }
 
   async createNewUser(registerDto: CreateUserDto) {

@@ -5,6 +5,31 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async findAllUsers() {
+    const allUsers = await this.prismaService.user.findMany();
+    if (!allUsers) {
+      throw new NotFoundException('Nenašiel som žiadných ľudí');
+    }
+
+    return allUsers;
+  }
+
+  async findAllWithRole(role: string) {
+    const allSpecificUsers = await this.prismaService.user.findMany({
+      where: {
+        role,
+      },
+    });
+
+    if (!allSpecificUsers) {
+      throw new NotFoundException(
+        'Nenašiel som žiadných ľudí s rolou: ' + role,
+      );
+    }
+
+    return allSpecificUsers;
+  }
+
   async findOneUser(id: string) {
     const oneUser = await this.prismaService.user.findFirst({
       where: {
