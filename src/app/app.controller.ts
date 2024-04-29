@@ -8,7 +8,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @ApiOperation({
-    description: 'Testing endpoint for our auth server',
+    summary: 'Testing endpoint for our auth server',
   })
   @ApiOkResponse()
   @Get()
