@@ -17,6 +17,9 @@ export class ViewUserDto {
   password: string;
 
   @ApiProperty()
+  hasAdminRights: boolean;
+
+  @ApiProperty()
   role: string;
 
   @ApiProperty()
