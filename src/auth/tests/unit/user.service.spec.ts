@@ -104,10 +104,11 @@ describe('UsersService', () => {
       const result = await usersService.findOneUser('1');
 
       expect(result).toEqual({
-        id: mockUser.id,
-        name: mockUser.name,
-        lastName: mockUser.lastName,
-        email: mockUser.email,
+        id: faker.string.uuid(),
+        name: faker.internet.userName(),
+        lastName: faker.internet.userName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
         role: mockUser.role,
         isActive: mockUser.isActive,
         createdAt: mockUser.createdAt,
