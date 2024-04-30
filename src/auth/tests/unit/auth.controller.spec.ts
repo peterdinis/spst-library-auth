@@ -43,7 +43,10 @@ describe('AuthController', () => {
 
   describe('allUsers', () => {
     it('should return an array of users', async () => {
-      const users: ViewUserDto[] = [{ id: '1', name: 'User 1' }, { id: '2', name: 'User 2' }];
+      const users: ViewUserDto[] = [
+        { id: '1', name: 'User 1' },
+        { id: '2', name: 'User 2' },
+      ];
       jest.spyOn(authService, 'getAllUsers').mockResolvedValue(users);
 
       expect(await controller.allUsers()).toEqual(users);
@@ -62,7 +65,10 @@ describe('AuthController', () => {
 
   describe('findAllStudents', () => {
     it('should return an array of students', async () => {
-      const students: ViewUserDto[] = [{ id: '1', name: 'Student 1' }, { id: '2', name: 'Student 2' }];
+      const students: ViewUserDto[] = [
+        { id: '1', name: 'Student 1' },
+        { id: '2', name: 'Student 2' },
+      ];
       jest.spyOn(authService, 'findAllStudents').mockResolvedValue(students);
 
       expect(await controller.findAllStudents()).toEqual(students);
@@ -71,7 +77,10 @@ describe('AuthController', () => {
 
   describe('findAllTeachers', () => {
     it('should return an array of teachers', async () => {
-      const teachers: ViewUserDto[] = [{ id: '1', name: 'Teacher 1' }, { id: '2', name: 'Teacher 2' }];
+      const teachers: ViewUserDto[] = [
+        { id: '1', name: 'Teacher 1' },
+        { id: '2', name: 'Teacher 2' },
+      ];
       jest.spyOn(authService, 'findAllTeachers').mockResolvedValue(teachers);
 
       expect(await controller.findAllTeachers()).toEqual(teachers);
@@ -80,8 +89,16 @@ describe('AuthController', () => {
 
   describe('createNewUser', () => {
     it('should create a new user', async () => {
-      const newUserDto: CreateUserDto = { name: 'New User', email: 'newuser@example.com', password: 'password' };
-      const createdUser: ViewUserDto = { id: '1', name: newUserDto.name, email: newUserDto.email };
+      const newUserDto: CreateUserDto = {
+        name: 'New User',
+        email: 'newuser@example.com',
+        password: 'password',
+      };
+      const createdUser: ViewUserDto = {
+        id: '1',
+        name: newUserDto.name,
+        email: newUserDto.email,
+      };
       jest.spyOn(authService, 'createNewUser').mockResolvedValue(createdUser);
 
       expect(await controller.createNewUser(newUserDto)).toEqual(createdUser);
@@ -90,8 +107,14 @@ describe('AuthController', () => {
 
   describe('loginUser', () => {
     it('should authenticate and return login credentials', async () => {
-      const loginDto: LoginDto = { email: 'user@example.com', password: 'password' };
-      const loginResponse: LoginDto = { accessToken: 'token', refreshToken: 'refresh-token' };
+      const loginDto: LoginDto = {
+        email: 'user@example.com',
+        password: 'password',
+      };
+      const loginResponse: LoginDto = {
+        accessToken: 'token',
+        refreshToken: 'refresh-token',
+      };
       jest.spyOn(authService, 'login').mockResolvedValue(loginResponse);
 
       expect(await controller.loginUser(loginDto)).toEqual(loginResponse);
@@ -111,7 +134,10 @@ describe('AuthController', () => {
   describe('updateAccount', () => {
     it('should update user account', async () => {
       const updateDto: UpdateUserDto = { id: '1', name: 'Updated User' };
-      const updatedUser: ViewUserDto = { id: updateDto.id, name: updateDto.name };
+      const updatedUser: ViewUserDto = {
+        id: updateDto.id,
+        name: updateDto.name,
+      };
       jest.spyOn(authService, 'updateAccount').mockResolvedValue(updatedUser);
 
       expect(await controller.updateAccount(updateDto)).toEqual(updatedUser);
@@ -131,17 +157,28 @@ describe('AuthController', () => {
   describe('deactivateAccount', () => {
     it('should deactivate user account by id', async () => {
       const userId = '1';
-      const deactivatedUser: ViewUserDto = { id: userId, name: 'Deactivated User' };
-      jest.spyOn(authService, 'deactivateAccount').mockResolvedValue(deactivatedUser);
+      const deactivatedUser: ViewUserDto = {
+        id: userId,
+        name: 'Deactivated User',
+      };
+      jest
+        .spyOn(authService, 'deactivateAccount')
+        .mockResolvedValue(deactivatedUser);
 
-      expect(await controller.deactivateAccount(userId)).toEqual(deactivatedUser);
+      expect(await controller.deactivateAccount(userId)).toEqual(
+        deactivatedUser,
+      );
     });
   });
 
   describe('makeAccountAdmin', () => {
     it('should make user account admin by id', async () => {
       const userId = '1';
-      const adminUser: ViewUserDto = { id: userId, name: 'Admin User', isAdmin: true };
+      const adminUser: ViewUserDto = {
+        id: userId,
+        name: 'Admin User',
+        isAdmin: true,
+      };
       jest.spyOn(authService, 'makeAccountAdmin').mockResolvedValue(adminUser);
 
       expect(await controller.makeAccountAdmin(userId)).toEqual(adminUser);
