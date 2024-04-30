@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user-dto';
@@ -14,6 +13,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { hash, compare } from 'bcrypt';
+import { AuthService } from 'src/auth/auth.service';
+import { LoginDto } from 'src/auth/dto/login-user-dto';
 
 describe('AuthService', () => {
   let service: AuthService;
