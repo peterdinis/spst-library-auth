@@ -30,7 +30,7 @@ import { UsersService } from './users.service';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly userService: UsersService
+    private readonly userService: UsersService,
   ) {}
 
   @ApiOperation({

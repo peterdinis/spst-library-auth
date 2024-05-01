@@ -38,8 +38,8 @@ export class AuthService {
 
     const checkPasswords = compare(loginDto.password, user.password);
 
-    if(!checkPasswords) {
-      throw new ForbiddenException("Heslá sa nezhodujú");
+    if (!checkPasswords) {
+      throw new ForbiddenException('Heslá sa nezhodujú');
     }
 
     if (user) {
