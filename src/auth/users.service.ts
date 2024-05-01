@@ -37,7 +37,7 @@ export class UsersService {
       },
     });
 
-    if (!oneUser) {
+    if (oneUser) {
       throw new NotFoundException('Používateľa s týmto id som nenašiel');
     }
 
@@ -51,8 +51,8 @@ export class UsersService {
       },
     });
 
-    if (!oneUser) {
-      throw new NotFoundException('Používateľa s týmto emailom som nenašiel');
+    if (oneUser) {
+      throw new NotFoundException('Takýto používateľ s daným emailom už existuje');
     }
 
     return oneUser;
