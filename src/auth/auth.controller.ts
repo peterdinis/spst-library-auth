@@ -94,7 +94,7 @@ export class AuthController {
   @ApiCreatedResponse({
     type: ViewUserDto,
   })
-  @Post('/users')
+  @Post('/register')
   async createNewUser(@Body() registerDto: CreateUserDto) {
     return this.authService.createNewUser(registerDto);
   }
