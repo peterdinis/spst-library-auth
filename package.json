@@ -1,8 +1,8 @@
 {
   "name": "spst-kniznica-auth",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
-  "author": "",
+  "author": "pdinis1@gmail.com",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
