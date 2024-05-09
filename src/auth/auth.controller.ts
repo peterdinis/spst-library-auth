@@ -3,15 +3,11 @@ import {
   Controller,
   Delete,
   Get,
-  Request,
   Param,
   Patch,
   Post,
-  Put,
-  UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -21,10 +17,9 @@ import { AuthService } from './auth.service';
 import { ViewUserDto } from './dto/view-user-dto';
 import { CreateUserDto } from './dto/create-user-dto';
 import { LoginDto } from './dto/login-user-dto';
-import { RefreshJwtGuard } from './guards/refresh.guard';
 import { UsersService } from './users.service';
 
-@ApiTags('Auth endpoints')
+@ApiTags('Auth Endpoints')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -107,13 +102,6 @@ export class AuthController {
   @Post('/users/login')
   async loginUser(@Body() loginDto: LoginDto) {
     return await this.authService.login(loginDto);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(RefreshJwtGuard)
-  @Post('refresh')
-  async refreshToken(@Request() req) {
-    return await this.authService.refreshToken(req.user);
   }
 
   @ApiOperation({

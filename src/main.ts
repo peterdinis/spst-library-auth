@@ -8,9 +8,8 @@ async function bootstrap() {
   app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Spšt Knižnica AUTH')
-    .setDescription('Autentifikačný server pre spst knižnica')
+    .setDescription('Autentifikačný server pre projekt SPŠT Knižnica')
     .setVersion('1.0')
-    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
