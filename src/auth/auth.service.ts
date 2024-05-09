@@ -12,7 +12,6 @@ import * as crypto from 'crypto';
 import { LoginDto } from './dto/login-user-dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { UpdateUserDto } from './dto/update-user-dto';
 import { UsersService } from './users.service';
 import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 
@@ -127,26 +126,6 @@ export class AuthService {
       }),
       expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
-  }
-
-  async updateAccount(updateDto: UpdateUserDto) {
-    const findOneUser = await this.usersService.findOneByEmail(updateDto.email);
-
-    const updateUser = await this.prismaService.user.update({
-      where: {
-        id: findOneUser.id,
-      },
-
-      data: {
-        ...updateDto,
-      },
-    });
-
-    if (!updateUser) {
-      throw new ForbiddenException('Uprava zlyhala');
-    }
-
-    return updateUser;
   }
 
   async deleteAccount(accountId: string) {

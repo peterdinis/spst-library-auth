@@ -20,7 +20,6 @@ import {
 import { AuthService } from './auth.service';
 import { ViewUserDto } from './dto/view-user-dto';
 import { CreateUserDto } from './dto/create-user-dto';
-import { UpdateUserDto } from './dto/update-user-dto';
 import { LoginDto } from './dto/login-user-dto';
 import { RefreshJwtGuard } from './guards/refresh.guard';
 import { UsersService } from './users.service';
@@ -115,17 +114,6 @@ export class AuthController {
   @Post('refresh')
   async refreshToken(@Request() req) {
     return await this.authService.refreshToken(req.user);
-  }
-
-  @ApiOperation({
-    summary: 'Update user account',
-  })
-  @ApiOkResponse({
-    type: ViewUserDto,
-  })
-  @Put('/users/:id')
-  async updateAccount(@Body() updateDto: UpdateUserDto) {
-    return this.authService.updateAccount(updateDto);
   }
 
   @ApiOperation({
