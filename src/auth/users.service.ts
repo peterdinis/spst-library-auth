@@ -1,60 +1,62 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service'
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+    constructor(private readonly prismaService: PrismaService) {}
 
-  async findAllUsers() {
-    const allUsers = await this.prismaService.user.findMany();
-    if (!allUsers) {
-      throw new NotFoundException('Nenašiel som žiadných ľudí');
+    async findAllUsers() {
+        const allUsers = await this.prismaService.user.findMany();
+        if (!allUsers) {
+            throw new NotFoundException('Nenašiel som žiadných ľudí');
+        }
+
+        return allUsers;
     }
 
-    return allUsers;
-  }
+    async findAllWithRole(role: string) {
+        const allSpecificUsers = await this.prismaService.user.findMany({
+            where: {
+                role,
+            },
+        });
 
-  async findAllWithRole(role: string) {
-    const allSpecificUsers = await this.prismaService.user.findMany({
-      where: {
-        role,
-      },
-    });
+        if (!allSpecificUsers) {
+            throw new NotFoundException(
+                'Nenašiel som žiadných ľudí s rolou: ' + role,
+            );
+        }
 
-    if (!allSpecificUsers) {
-      throw new NotFoundException(
-        'Nenašiel som žiadných ľudí s rolou: ' + role,
-      );
+        return allSpecificUsers;
     }
 
-    return allSpecificUsers;
-  }
+    async findOneUser(id: string) {
+        const oneUser = await this.prismaService.user.findFirst({
+            where: {
+                id,
+            },
+        });
 
-  async findOneUser(id: string) {
-    const oneUser = await this.prismaService.user.findFirst({
-      where: {
-        id,
-      },
-    });
+        if (oneUser) {
+            throw new NotFoundException('Používateľa s týmto id som nenašiel');
+        }
 
-    if (oneUser) {
-      throw new NotFoundException('Používateľa s týmto id som nenašiel');
+        return oneUser;
     }
 
-    return oneUser;
-  }
+    async findOneByEmail(email: string) {
+        const oneUser = await this.prismaService.user.findFirst({
+            where: {
+                email,
+            },
+        });
 
-  async findOneByEmail(email: string) {
-    const oneUser = await this.prismaService.user.findFirst({
-      where: {
-        email,
-      },
-    });
+        if (oneUser) {
+            throw new NotFoundException(
+                'Takýto používateľ s daným emailom už existuje',
+            );
+        }
 
-    if (oneUser) {
-      throw new NotFoundException('Takýto používateľ s daným emailom už existuje');
+        return oneUser;
     }
-
-    return oneUser;
-  }
 }

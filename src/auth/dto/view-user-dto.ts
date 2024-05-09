@@ -1,33 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ViewUserDto {
-  @ApiProperty()
-  id: string;
+    @ApiProperty()
+    id: string;
 
-  @ApiProperty()
-  name: string;
+    @ApiProperty()
+    name: string;
 
-  @ApiProperty()
-  lastName: string;
+    @ApiProperty()
+    lastName: string;
 
-  @ApiProperty()
-  email: string;
+    @ApiProperty()
+    email: string;
 
-  @ApiProperty()
-  password: string;
+    @ApiProperty()
+    password: string;
 
-  @ApiProperty()
-  hasAdminRights: boolean;
+    @ApiProperty()
+    hasAdminRights: boolean;
 
-  @ApiProperty()
-  role: string;
+    @ApiProperty()
+    role: string;
 
-  @ApiProperty()
-  isActive: boolean;
+    @ApiProperty()
+    isActive: boolean;
 
-  @ApiProperty()
-  createdAt: Date;
+    @ApiProperty()
+    createdAt: Date;
 
-  @ApiProperty()
-  updatedAt: Date;
+    @ApiProperty()
+    updatedAt: Date;
 }
