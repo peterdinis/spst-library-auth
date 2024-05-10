@@ -19,6 +19,7 @@ import { CreateUserDto } from './dto/create-user-dto';
 import { LoginDto } from './dto/login-user-dto';
 import { UsersService } from './users.service';
 import { AdminRightsDto } from './dto/admin-rights-dto';
+import { RemoveAccountDto } from './dto/remove-account-dto';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
@@ -111,9 +112,9 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Delete('/users/:id')
-    async deleteAccount(@Param('id') id: string) {
-        return this.authService.deleteAccount(id);
+    @Delete('/user/account')
+    async deleteAccount(@Body() removeAccount: RemoveAccountDto) {
+        return this.authService.deleteAccount(removeAccount);
     }
 
     @ApiOperation({
@@ -122,9 +123,9 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Patch('/users/:id/deactivate')
-    async deactivateAccount(@Param('id') id: string) {
-        return this.authService.deactivateAccount(id);
+    @Patch('/users/account/deactivate')
+    async deactivateAccount(@Body() removeAccount: RemoveAccountDto) {
+        return this.authService.deactivateAccount(removeAccount);
     }
 
     @ApiOperation({

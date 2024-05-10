@@ -15,6 +15,7 @@ import { User } from '@prisma/client';
 import { UsersService } from './users.service';
 import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 import { AdminRightsDto } from './dto/admin-rights-dto';
+import { RemoveAccountDto } from './dto/remove-account-dto';
 
 @Injectable()
 export class AuthService {
@@ -131,8 +132,8 @@ export class AuthService {
         };
     }
 
-    async deleteAccount(accountId: string) {
-        const findOneUser = await this.usersService.findOneUser(accountId);
+    async deleteAccount(removeAccount: RemoveAccountDto) {
+        const findOneUser = await this.usersService.findOneUser(removeAccount.accountId);
 
         const deleteAccount = await this.prismaService.user.delete({
             where: {
@@ -147,8 +148,8 @@ export class AuthService {
         return deleteAccount;
     }
 
-    async deactivateAccount(accountId: string) {
-        const findOneUser = await this.usersService.findOneUser(accountId);
+    async deactivateAccount(removeAccount: RemoveAccountDto) {
+        const findOneUser = await this.usersService.findOneUser(removeAccount.accountId);
 
         const deactivateAccount = await this.prismaService.user.update({
             where: {
