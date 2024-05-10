@@ -1,7 +1,7 @@
 {
   "name": "spst-kniznica-auth",
   "version": "0.0.6",
-  "description": "",
+  "description": "Auth server for SPŠT Knižnica",
   "author": "pdinis1@gmail.com",
   "private": true,
   "license": "UNLICENSED",
