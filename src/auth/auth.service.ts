@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UsersService } from './users.service';
 import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
+import { AdminRightsDto } from './dto/admin-rights-dto';
 
 @Injectable()
 export class AuthService {
@@ -166,8 +167,8 @@ export class AuthService {
         return deactivateAccount;
     }
 
-    async makeAccountAdmin(accountId: string) {
-        const findOneUser = await this.usersService.findOneUser(accountId);
+    async makeAccountAdmin(rightsDto: AdminRightsDto) {
+        const findOneUser = await this.usersService.findOneUser(rightsDto.accountId);
 
         if (findOneUser.role === 'STUDENT') {
             throw new BadRequestException('Študent nemôže mať admin práva');
@@ -185,8 +186,8 @@ export class AuthService {
         return updateAdminRights;
     }
 
-    async removeAdminRights(accountId: string) {
-        const findOneUser = await this.usersService.findOneUser(accountId);
+    async removeAdminRights(rightsDto: AdminRightsDto) {
+        const findOneUser = await this.usersService.findOneUser(rightsDto.accountId);
 
         if (findOneUser.role === 'STUDENT') {
             throw new BadRequestException(

@@ -18,6 +18,7 @@ import { ViewUserDto } from './dto/view-user-dto';
 import { CreateUserDto } from './dto/create-user-dto';
 import { LoginDto } from './dto/login-user-dto';
 import { UsersService } from './users.service';
+import { AdminRightsDto } from './dto/admin-rights-dto';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
@@ -132,9 +133,9 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Patch('/users/:id/make-admin')
-    async makeAccountAdmin(@Param('id') id: string) {
-        return this.authService.makeAccountAdmin(id);
+    @Patch('/users/make-admin')
+    async makeAccountAdmin(@Body() rightsDto: AdminRightsDto) {
+        return this.authService.makeAccountAdmin(rightsDto);
     }
 
     @ApiOperation({
@@ -144,8 +145,8 @@ export class AuthController {
         type: ViewUserDto
     })
 
-    @Patch("/users/:id/remove-admin")
-    async removeAccountAdmin(@Param("id") id: string) {
-        return this.authService.removeAdminRights(id);
+    @Patch("/users/remove-admin")
+    async removeAccountAdmin(@Body() rightsDto: AdminRightsDto) {
+        return this.authService.removeAdminRights(rightsDto);
     }
 }
