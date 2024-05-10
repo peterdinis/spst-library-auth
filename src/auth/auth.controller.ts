@@ -136,4 +136,16 @@ export class AuthController {
     async makeAccountAdmin(@Param('id') id: string) {
         return this.authService.makeAccountAdmin(id);
     }
+
+    @ApiOperation({
+        summary: "Remove admin rights"
+    })
+    @ApiOkResponse({
+        type: ViewUserDto
+    })
+
+    @Patch("/users/:id/remove-admin")
+    async removeAccountAdmin(@Param("id") id: string) {
+        return this.authService.removeAdminRights(id);
+    }
 }
