@@ -171,22 +171,23 @@ export class AuthService {
     }
 
     async makeAccountAdmin(rightsDto: AdminRightsDto) {
-        const findOneUser = await this.usersService.findOneUser(rightsDto.accountId);
-
-        if (findOneUser.role === 'STUDENT') {
+        const findOneAppUser = await this.usersService.findOneUser(rightsDto.accountId);
+    
+        if (findOneAppUser.role === 'STUDENT') {
             throw new BadRequestException('Študent nemôže mať admin práva');
         }
-
-        const updateAdminRights = await this.prismaService.user.update({
-            where: {
-                id: findOneUser.id,
-            },
-            data: {
-                hasAdminRights: true,
-            },
+        
+        const updatedUser = await this.prismaService.user.update({
+            where: { id: findOneAppUser.id },
+            data: { hasAdminRights: true },
         });
 
-        return updateAdminRights;
+        const client = this.usersService.findOneUser(findOneAppUser.id);
+        if (client) {
+          this.messagesGateway.handleAdminRightsMessage(client, null);
+        }
+    
+        return updatedUser;
     }
 
     async removeAdminRights(rightsDto: AdminRightsDto) {
