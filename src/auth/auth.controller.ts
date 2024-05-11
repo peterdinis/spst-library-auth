@@ -1,7 +1,6 @@
 import {
     Body,
     Controller,
-    Delete,
     Get,
     Param,
     Patch,
@@ -112,7 +111,7 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Delete('/user/account/delete')
+    @Patch('/user/account/delete')
     async deleteAccount(@Body() removeAccount: RemoveAccountDto) {
         return this.authService.deleteAccount(removeAccount);
     }
