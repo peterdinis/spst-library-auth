@@ -16,6 +16,7 @@ import { UsersService } from './users.service';
 import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 import { AdminRightsDto } from './dto/admin-rights-dto';
 import { RemoveAccountDto } from './dto/remove-account-dto';
+import { MessagesGateway } from 'src/messages/messages.gateway';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
         private readonly prismaService: PrismaService,
         private readonly jwtService: JwtService,
         private readonly usersService: UsersService,
+        private readonly messagesGateway: MessagesGateway
     ) {}
 
     async validateUser(loginDto: LoginDto) {
