@@ -1,6 +1,6 @@
 {
   "name": "spst-kniznica-auth",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Auth server for SPŠT Knižnica",
   "author": "pdinis1@gmail.com",
   "private": true,
@@ -25,6 +25,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.3.8",
+    "@nestjs/platform-ws": "^10.3.8",
     "@nestjs/swagger": "^7.3.1",
     "@nestjs/websockets": "^10.3.8",
     "@prisma/client": "^5.13.0",

@@ -16,6 +16,7 @@ import { UsersService } from './users.service';
 import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 import { AdminRightsDto } from './dto/admin-rights-dto';
 import { RemoveAccountDto } from './dto/remove-account-dto';
+import { MessagesGateway } from 'src/messages/messages.gateway';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
         private readonly prismaService: PrismaService,
         private readonly jwtService: JwtService,
         private readonly usersService: UsersService,
+        private readonly messagesGateway: MessagesGateway
     ) {}
 
     async validateUser(loginDto: LoginDto) {
@@ -133,11 +135,11 @@ export class AuthService {
     }
 
     async deleteAccount(removeAccount: RemoveAccountDto) {
-        const findOneUser = await this.usersService.findOneUser(removeAccount.accountId);
+        const findOneAppUser = await this.usersService.findOneUser(removeAccount.accountId);
 
         const deleteAccount = await this.prismaService.user.delete({
             where: {
-                id: findOneUser.id,
+                id: findOneAppUser.id,
             },
         });
 
@@ -145,15 +147,20 @@ export class AuthService {
             throw new ConflictException('Nepodarilo sa zmazať účet');
         }
 
+        const client = this.usersService.findOneUser(findOneAppUser.id);
+        if (client) {
+          this.messagesGateway.removeAccount(client, null);
+        }
+
         return deleteAccount;
     }
 
     async deactivateAccount(removeAccount: RemoveAccountDto) {
-        const findOneUser = await this.usersService.findOneUser(removeAccount.accountId);
+        const findOneAppUser = await this.usersService.findOneUser(removeAccount.accountId);
 
         const deactivateAccount = await this.prismaService.user.update({
             where: {
-                id: findOneUser.id,
+                id: findOneAppUser.id,
             },
 
             data: {
@@ -165,32 +172,38 @@ export class AuthService {
             throw new ConflictException('Nepodarilo sa deaktivovať účet');
         }
 
+        const client = this.usersService.findOneUser(findOneAppUser.id);
+        if (client) {
+          this.messagesGateway.deactivateAccount(client, null);
+        }
+
         return deactivateAccount;
     }
 
     async makeAccountAdmin(rightsDto: AdminRightsDto) {
-        const findOneUser = await this.usersService.findOneUser(rightsDto.accountId);
-
-        if (findOneUser.role === 'STUDENT') {
+        const findOneAppUser = await this.usersService.findOneUser(rightsDto.accountId);
+    
+        if (findOneAppUser.role === 'STUDENT') {
             throw new BadRequestException('Študent nemôže mať admin práva');
         }
 
-        const updateAdminRights = await this.prismaService.user.update({
-            where: {
-                id: findOneUser.id,
-            },
-            data: {
-                hasAdminRights: true,
-            },
+        const updatedUser = await this.prismaService.user.update({
+            where: { id: findOneAppUser.id },
+            data: { hasAdminRights: true },
         });
 
-        return updateAdminRights;
+        const client = this.usersService.findOneUser(findOneAppUser.id);
+        if (client) {
+          this.messagesGateway.handleAdminRightsMessage(client, null);
+        }
+    
+        return updatedUser;
     }
 
     async removeAdminRights(rightsDto: AdminRightsDto) {
-        const findOneUser = await this.usersService.findOneUser(rightsDto.accountId);
+        const findOneAppUser = await this.usersService.findOneUser(rightsDto.accountId);
 
-        if (findOneUser.role === 'STUDENT') {
+        if (findOneAppUser.role === 'STUDENT') {
             throw new BadRequestException(
                 'Chyba Študent nemôže mať admin práva',
             );
@@ -198,12 +211,17 @@ export class AuthService {
 
         const updateAdminRights = await this.prismaService.user.update({
             where: {
-                id: findOneUser.id,
+                id: findOneAppUser.id,
             },
             data: {
                 hasAdminRights: false,
             },
         });
+
+        const client = this.usersService.findOneUser(findOneAppUser.id);
+        if (client) {
+          this.messagesGateway.handleAdminRemoveRights(client, null);
+        }
 
         return updateAdminRights;
     }

@@ -3,16 +3,14 @@ import {
     WebSocketGateway,
     WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-
-interface CustomWebSocketClient extends Socket {}
+import { Server} from 'socket.io'
 
 @WebSocketGateway()
 export class MessagesGateway {
     @WebSocketServer() server: Server;
 
     @SubscribeMessage('adminRightsMessage')
-    handleAdminRightsMessage(client: CustomWebSocketClient, _: unknown): void {
+    handleAdminRightsMessage(client: any, _: unknown): void {
         const clientId = client.id;
         this.server
             .to(clientId)
@@ -20,7 +18,7 @@ export class MessagesGateway {
     }
 
     @SubscribeMessage('adminRemoveRights')
-    handleAdminRemoveRights(client: CustomWebSocketClient, _: unknown): void {
+    handleAdminRemoveRights(client: any, _: unknown): void {
         const clientId = client.id;
         this.server
             .to(clientId)
@@ -31,7 +29,7 @@ export class MessagesGateway {
     }
 
     @SubscribeMessage('deactivateAccount')
-    deactivateAccount(client: CustomWebSocketClient, _: unknown): void {
+    deactivateAccount(client: any, _: unknown): void {
         const clientId = client.id;
         this.server
             .to(clientId)
@@ -39,7 +37,7 @@ export class MessagesGateway {
     }
 
     @SubscribeMessage('removeAccount')
-    removeAccount(client: CustomWebSocketClient, _: unknown): void {
+    removeAccount(client: any, _: unknown): void {
         const clientId = client.id;
         this.server.to(clientId).emit('removeAccount', 'Váš účet bol zmazaný');
     }
