@@ -112,7 +112,7 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Delete('/user/account')
+    @Delete('/user/account/delete')
     async deleteAccount(@Body() removeAccount: RemoveAccountDto) {
         return this.authService.deleteAccount(removeAccount);
     }
