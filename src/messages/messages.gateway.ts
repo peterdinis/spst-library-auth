@@ -1,9 +1,15 @@
-import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server } from 'socket.io';
 
 @WebSocketGateway()
 export class MessagesGateway {
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  @WebSocketServer() server: Server;
+
+  @SubscribeMessage('adminRightsMessage')
+  handleAdminRightsMessage(client: any, payload: any): void {
+    const clientId = client.id;
+    this.server.to(clientId).emit('adminRightsMessage', 'Váš učet má pristupové práva');
   }
+
+  
 }
