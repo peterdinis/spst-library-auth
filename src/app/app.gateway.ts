@@ -2,7 +2,7 @@ import { WebSocketGateway, WebSocketServer, OnGatewayConnection } from '@nestjs/
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 
-@WebSocketGateway()
+@WebSocketGateway({port: 4000})
 export class AppGateway implements OnGatewayConnection {
   private readonly logger = new Logger(AppGateway.name);
 
