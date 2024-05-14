@@ -1,13 +1,22 @@
 import {
+    OnGatewayConnection,
     SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
 } from '@nestjs/websockets';
-import { Server} from 'socket.io'
+import { Server, Socket } from 'socket.io';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway()
-export class MessagesGateway {
+export class MessagesGateway implements OnGatewayConnection {
     @WebSocketServer() server: Server;
+
+    private readonly logger = new Logger(MessagesGateway.name);
+
+    handleConnection(client: Socket, ...args: any[]) {
+        this.logger.log(`Client connected: ${client.id}`);
+        client.emit('connected', 'Connected to WebSocket server');
+    }
 
     @SubscribeMessage('adminRightsMessage')
     handleAdminRightsMessage(client: any, _: unknown): void {
