@@ -15,6 +15,7 @@ async function bootstrap() {
             logger: true,
         }),
     )) as INestApplication;
+    app.useWebSocketAdapter(new WsAdapter(app));
     app.enableCors();
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')
@@ -24,7 +25,6 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
-    app.useWebSocketAdapter(new WsAdapter(app));
-    await app.listen(4000, '0.0.0.0');
+    await app.listen(4000, '127.0.0.1');
 }
 bootstrap();
