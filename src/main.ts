@@ -15,7 +15,6 @@ async function bootstrap() {
             logger: true,
         }),
     )) as INestApplication;
-    app.useWebSocketAdapter(new WsAdapter(app));
     app.enableCors();
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')

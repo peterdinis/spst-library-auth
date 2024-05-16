@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { MessagesGatewayModule } from 'src/messages/messages.module';
 
 @Module({
     imports: [
@@ -13,7 +12,6 @@ import { MessagesGatewayModule } from 'src/messages/messages.module';
         }),
         PrismaModule,
         AuthModule,
-        MessagesGatewayModule
     ],
     controllers: [AppController],
     providers: [AppService],
