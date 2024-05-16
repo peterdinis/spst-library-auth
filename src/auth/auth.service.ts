@@ -16,7 +16,6 @@ import { UsersService } from './users.service';
 import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 import { AdminRightsDto } from './dto/admin-rights-dto';
 import { RemoveAccountDto } from './dto/remove-account-dto';
-import { MessagesGateway } from 'src/messages/messages.gateway';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +23,6 @@ export class AuthService {
         private readonly prismaService: PrismaService,
         private readonly jwtService: JwtService,
         private readonly usersService: UsersService,
-        private readonly messagesGateway: MessagesGateway
     ) {}
 
     async validateUser(loginDto: LoginDto) {
@@ -147,11 +145,6 @@ export class AuthService {
             throw new ConflictException('Nepodarilo sa zmazať účet');
         }
 
-        const client = this.usersService.findOneUser(findOneAppUser.id);
-        if (client) {
-          this.messagesGateway.removeAccount(client, null);
-        }
-
         return deleteAccount;
     }
 
@@ -172,11 +165,6 @@ export class AuthService {
             throw new ConflictException('Nepodarilo sa deaktivovať účet');
         }
 
-        const client = this.usersService.findOneUser(findOneAppUser.id);
-        if (client) {
-          this.messagesGateway.deactivateAccount(client, null);
-        }
-
         return deactivateAccount;
     }
 
@@ -191,11 +179,6 @@ export class AuthService {
             where: { id: findOneAppUser.id },
             data: { hasAdminRights: true },
         });
-
-        const client = this.usersService.findOneUser(findOneAppUser.id);
-        if (client) {
-          this.messagesGateway.handleAdminRightsMessage(client, null);
-        }
     
         return updatedUser;
     }
@@ -217,11 +200,6 @@ export class AuthService {
                 hasAdminRights: false,
             },
         });
-
-        const client = this.usersService.findOneUser(findOneAppUser.id);
-        if (client) {
-          this.messagesGateway.handleAdminRemoveRights(client, null);
-        }
 
         return updateAdminRights;
     }

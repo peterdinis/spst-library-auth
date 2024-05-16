@@ -4,7 +4,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
-import { MessagesGatewayModule } from 'src/messages/messages.module';
 
 @Module({
     imports: [
@@ -16,7 +15,6 @@ import { MessagesGatewayModule } from 'src/messages/messages.module';
                 expiresIn: process.env.EXPIRES_IN as unknown as string,
             },
         }),
-        MessagesGatewayModule
     ],
     providers: [AuthService, JwtService, UsersService],
     controllers: [AuthController],
