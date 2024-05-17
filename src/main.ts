@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
-import { WsAdapter } from '@nestjs/platform-ws';
 import { NestFactory } from '@nestjs/core';
 import {
     FastifyAdapter,
@@ -15,6 +14,7 @@ async function bootstrap() {
             logger: true,
         }),
     )) as INestApplication;
+    
     app.enableCors();
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')
