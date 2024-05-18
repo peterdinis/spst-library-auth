@@ -3,6 +3,7 @@ import {
     ConflictException,
     ForbiddenException,
     Injectable,
+    NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -24,6 +25,23 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly usersService: UsersService,
     ) {}
+
+    async teacherAdminsAll() {
+        const findSpecificUsrs = await this.prismaService.user.findMany({
+            where: {
+                role: TEACHER,
+                AND: {
+                    role: ADMIN
+                }
+            }
+        });
+
+        if(!findSpecificUsrs) {
+            throw new NotFoundException("Žiadny učitelia/admini nemajú v applikácií vytvorené učty");
+        }
+
+        return findSpecificUsrs;
+    }
 
     async validateUser(loginDto: LoginDto) {
         const user = await this.prismaService.user.findFirst({
