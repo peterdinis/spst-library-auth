@@ -76,7 +76,7 @@ export class AuthController {
         summary: "Admin and teachers all"
     })
     @ApiOkResponse()
-    @Get("/admins/teachers")
+    @Get("/users/admins/teachers")
     async allAdminsAndTeachers() {
         return this.authService.teacherAdminsAll()
     }
