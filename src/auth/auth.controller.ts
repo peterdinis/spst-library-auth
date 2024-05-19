@@ -45,7 +45,7 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Get('/users/:id')
+    @Get('/user/:id')
     async getOneUser(@Param('id') id: string) {
         return this.userService.findOneUser(id);
     }
@@ -56,7 +56,7 @@ export class AuthController {
     @ApiOkResponse({
         type: [ViewUserDto],
     })
-    @Get('/users/students')
+    @Get('/students')
     async findAllStudents() {
         return this.authService.findAllStudents();
     }
@@ -67,7 +67,7 @@ export class AuthController {
     @ApiOkResponse({
         type: [ViewUserDto],
     })
-    @Get('/users/teachers')
+    @Get('/teachers')
     async findAllTeachers() {
         return this.authService.findAllTeachers();
     }
@@ -76,7 +76,7 @@ export class AuthController {
         summary: "Admin and teachers all"
     })
     @ApiOkResponse()
-    @Get("/users/admins/teachers")
+    @Get("/all/teachers/admins")
     async allAdminsAndTeachers() {
         return this.authService.teacherAdminsAll()
     }
@@ -87,7 +87,7 @@ export class AuthController {
     @ApiOkResponse({
         type: [ViewUserDto],
     })
-    @Get('/users/admins')
+    @Get('/admins')
     async findAllAdmins() {
         return this.authService.findAllAdmins();
     }
@@ -109,7 +109,7 @@ export class AuthController {
     @ApiCreatedResponse({
         type: LoginDto,
     })
-    @Post('/users/login')
+    @Post('/login')
     async loginUser(@Body() loginDto: LoginDto) {
         return await this.authService.login(loginDto);
     }
@@ -120,7 +120,7 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Patch('/user/account/delete')
+    @Patch('/account/delete')
     async deleteAccount(@Body() removeAccount: RemoveAccountDto) {
         return this.authService.deleteAccount(removeAccount);
     }
@@ -131,7 +131,7 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Patch('/users/account/deactivate')
+    @Patch('/account/deactivate')
     async deactivateAccount(@Body() removeAccount: RemoveAccountDto) {
         return this.authService.deactivateAccount(removeAccount);
     }
@@ -142,7 +142,7 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
-    @Patch('/users/make-admin')
+    @Patch('/account/make-admin')
     async makeAccountAdmin(@Body() rightsDto: AdminRightsDto) {
         return this.authService.makeAccountAdmin(rightsDto);
     }
@@ -154,7 +154,7 @@ export class AuthController {
         type: ViewUserDto
     })
 
-    @Patch("/users/remove-admin")
+    @Patch("/account/remove-admin")
     async removeAccountAdmin(@Body() rightsDto: AdminRightsDto) {
         return this.authService.removeAdminRights(rightsDto);
     }
