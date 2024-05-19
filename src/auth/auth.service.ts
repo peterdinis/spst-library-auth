@@ -118,7 +118,7 @@ export class AuthService {
             user,
             backendTokens: {
                 accessToken: await this.jwtService.signAsync(user, {
-                    expiresIn: '20s',
+                    expiresIn: '1d',
                     secret: process.env.JWT_SECRET as unknown as string,
                 }),
                 refreshToken: await this.jwtService.signAsync(user, {
@@ -139,7 +139,7 @@ export class AuthService {
 
         return {
             accessToken: await this.jwtService.signAsync(payload, {
-                expiresIn: '20s',
+                expiresIn: '1d',
                 secret: process.env.jwtSecretKey,
             }),
             refreshToken: await this.jwtService.signAsync(payload, {
@@ -189,7 +189,7 @@ export class AuthService {
     async makeAccountAdmin(rightsDto: AdminRightsDto) {
         const findOneAppUser = await this.usersService.findOneUser(rightsDto.accountId);
     
-        if (findOneAppUser.role === 'STUDENT') {
+        if (findOneAppUser.role === STUDENT) {
             throw new BadRequestException('Študent nemôže mať admin práva');
         }
 
@@ -204,7 +204,7 @@ export class AuthService {
     async removeAdminRights(rightsDto: AdminRightsDto) {
         const findOneAppUser = await this.usersService.findOneUser(rightsDto.accountId);
 
-        if (findOneAppUser.role === 'STUDENT') {
+        if (findOneAppUser.role === STUDENT) {
             throw new BadRequestException(
                 'Chyba Študent nemôže mať admin práva',
             );

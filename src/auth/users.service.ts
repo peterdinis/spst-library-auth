@@ -53,7 +53,7 @@ export class UsersService {
 
         if (oneUser) {
             throw new NotFoundException(
-                'Takýto používateľ s daným emailom už existuje',
+                'Používateľ už existuje s daným emailom',
             );
         }
 
