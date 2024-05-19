@@ -29,10 +29,10 @@ export class AuthService {
     async teacherAdminsAll() {
         const findSpecificUsrs = await this.prismaService.user.findMany({
             where: {
-                role: TEACHER,
-                AND: {
-                    role: ADMIN
-                }
+                OR: [
+                    { role: TEACHER },
+                    { role: ADMIN }
+                ]
             }
         });
 
