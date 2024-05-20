@@ -51,7 +51,7 @@ export class UsersService {
             },
         });
 
-        if (oneUser) {
+        if (!oneUser) {
             throw new NotFoundException(
                 'Používateľ už existuje s daným emailom',
             );
