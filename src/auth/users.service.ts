@@ -37,7 +37,7 @@ export class UsersService {
             },
         });
 
-        if (oneUser) {
+        if (!oneUser) {
             throw new NotFoundException('Používateľa s týmto id som nenašiel');
         }
 
