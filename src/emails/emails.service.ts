@@ -8,7 +8,7 @@ export class EmailsService {
 
   async sendEmail(sendEmailDto: SendEmailDto) {
     const newEmail = await this.resendService.send({
-        from: sendEmailDto.from,
+        from: "Acme <onboarding@resend.dev>",
         to: sendEmailDto.to,
         subject: sendEmailDto.subject,
         text: sendEmailDto.text
