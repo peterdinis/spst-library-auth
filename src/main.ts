@@ -14,7 +14,7 @@ async function bootstrap() {
             logger: true,
         }),
     )) as INestApplication;
-    
+
     app.enableCors();
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')

@@ -29,15 +29,14 @@ export class AuthService {
     async teacherAdminsAll() {
         const findSpecificUsrs = await this.prismaService.user.findMany({
             where: {
-                OR: [
-                    { role: TEACHER },
-                    { role: ADMIN }
-                ]
-            }
+                OR: [{ role: TEACHER }, { role: ADMIN }],
+            },
         });
 
-        if(!findSpecificUsrs) {
-            throw new NotFoundException("Žiadny učitelia/admini nemajú v applikácií vytvorené učty");
+        if (!findSpecificUsrs) {
+            throw new NotFoundException(
+                'Žiadny učitelia/admini nemajú v applikácií vytvorené učty',
+            );
         }
 
         return findSpecificUsrs;
@@ -62,7 +61,7 @@ export class AuthService {
         }
 
         if (user) {
-            const { password, ...result } = user;
+            const {...result } = user;
             return result;
         } else {
             throw new UnauthorizedException('Zlé prihlasovacie údaje');
@@ -151,7 +150,9 @@ export class AuthService {
     }
 
     async deleteAccount(removeAccount: RemoveAccountDto) {
-        const findOneAppUser = await this.usersService.findOneUser(removeAccount.accountId);
+        const findOneAppUser = await this.usersService.findOneUser(
+            removeAccount.accountId,
+        );
 
         const deleteAccount = await this.prismaService.user.delete({
             where: {
@@ -167,7 +168,9 @@ export class AuthService {
     }
 
     async deactivateAccount(removeAccount: RemoveAccountDto) {
-        const findOneAppUser = await this.usersService.findOneUser(removeAccount.accountId);
+        const findOneAppUser = await this.usersService.findOneUser(
+            removeAccount.accountId,
+        );
 
         const deactivateAccount = await this.prismaService.user.update({
             where: {
@@ -187,8 +190,10 @@ export class AuthService {
     }
 
     async makeAccountAdmin(rightsDto: AdminRightsDto) {
-        const findOneAppUser = await this.usersService.findOneUser(rightsDto.accountId);
-    
+        const findOneAppUser = await this.usersService.findOneUser(
+            rightsDto.accountId,
+        );
+
         if (findOneAppUser.role === STUDENT) {
             throw new BadRequestException('Študent nemôže mať admin práva');
         }
@@ -197,12 +202,14 @@ export class AuthService {
             where: { id: findOneAppUser.id },
             data: { hasAdminRights: true },
         });
-    
+
         return updatedUser;
     }
 
     async removeAdminRights(rightsDto: AdminRightsDto) {
-        const findOneAppUser = await this.usersService.findOneUser(rightsDto.accountId);
+        const findOneAppUser = await this.usersService.findOneUser(
+            rightsDto.accountId,
+        );
 
         if (findOneAppUser.role === STUDENT) {
             throw new BadRequestException(
