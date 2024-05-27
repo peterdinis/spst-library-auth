@@ -13,7 +13,7 @@ import { EmailsModule } from 'src/emails/emails.module';
         }),
         PrismaModule,
         AuthModule,
-        EmailsModule
+        EmailsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -1,11 +1,4 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Param,
-    Patch,
-    Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import {
     ApiCreatedResponse,
     ApiOkResponse,
@@ -73,12 +66,12 @@ export class AuthController {
     }
 
     @ApiOperation({
-        summary: "Admin and teachers all"
+        summary: 'Admin and teachers all',
     })
     @ApiOkResponse()
-    @Get("/all/teachers/admins")
+    @Get('/all/teachers/admins')
     async allAdminsAndTeachers() {
-        return this.authService.teacherAdminsAll()
+        return this.authService.teacherAdminsAll();
     }
 
     @ApiOperation({
@@ -148,13 +141,12 @@ export class AuthController {
     }
 
     @ApiOperation({
-        summary: "Remove admin rights"
+        summary: 'Remove admin rights',
     })
     @ApiOkResponse({
-        type: ViewUserDto
+        type: ViewUserDto,
     })
-
-    @Patch("/account/remove-admin")
+    @Patch('/account/remove-admin')
     async removeAccountAdmin(@Body() rightsDto: AdminRightsDto) {
         return this.authService.removeAdminRights(rightsDto);
     }
