@@ -12,7 +12,6 @@ import { compare } from 'bcrypt';
 import * as crypto from 'crypto';
 import { LoginDto } from './dto/login-user-dto';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
 import { UsersService } from './users.service';
 import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 import { AdminRightsDto } from './dto/admin-rights-dto';
@@ -131,7 +130,7 @@ export class AuthService {
         };
     }
 
-    async refreshToken(user: User) {
+    async refreshToken(user: any) {
         const payload = {
             username: user.name,
         };
