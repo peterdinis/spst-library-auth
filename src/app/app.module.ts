@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,7 +10,6 @@ import { MongooseModule } from '@nestjs/mongoose';
         ConfigModule.forRoot({
             isGlobal: true,
         }),
-        PrismaModule,
         AuthModule,
         MongooseModule.forRoot(process.env.DATABASE_URI, {
             dbName: process.env.DATABASE_NAME,
