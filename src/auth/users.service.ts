@@ -1,29 +1,27 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from './model/User.model';
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
     async findAllUsers() {
-        const allUsers = await this.prismaService.user.findMany();
-        if (!allUsers) {
-            throw new NotFoundException('Nenašiel som žiadných ľudí');
+        const allUsers = await this.userModel.find().exec();
+        if (!allUsers || allUsers.length === 0) {
+            throw new NotFoundException('Nenašiel som žiadnych ľudí');
         }
 
         return allUsers;
     }
 
     async findAllWithRole(role: string) {
-        const allSpecificUsers = await this.prismaService.user.findMany({
-            where: {
-                role,
-            },
-        });
+        const allSpecificUsers = await this.userModel.find({ role }).exec();
 
-        if (!allSpecificUsers) {
+        if (!allSpecificUsers || allSpecificUsers.length === 0) {
             throw new NotFoundException(
-                'Nenašiel som žiadných ľudí s rolou: ' + role,
+                'Nenašiel som žiadnych ľudí s rolou: ' + role,
             );
         }
 
@@ -31,11 +29,7 @@ export class UsersService {
     }
 
     async findOneUser(id: string) {
-        const oneUser = await this.prismaService.user.findFirst({
-            where: {
-                id,
-            },
-        });
+        const oneUser = await this.userModel.findById(id).exec();
 
         if (!oneUser) {
             throw new NotFoundException('Používateľa s týmto id som nenašiel');
@@ -45,15 +39,11 @@ export class UsersService {
     }
 
     async findOneByEmail(email: string) {
-        const oneUser = await this.prismaService.user.findFirst({
-            where: {
-                email,
-            },
-        });
+        const oneUser = await this.userModel.findOne({ email }).exec();
 
         if (!oneUser) {
             throw new NotFoundException(
-                'Používateľ už existuje s daným emailom',
+                'Používateľ s daným emailom neexistuje',
             );
         }
 
