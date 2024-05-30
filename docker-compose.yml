@@ -1,16 +1,15 @@
 version: '3.8'
 services:
-  # app service for your backend
   app:
-    container_name: backend
+    container_name: spst-container
     build:
       context: ./
       dockerfile: Dockerfile
     environment:
-      DATABASE_NAME: # DATABASE_NAME
-      DATABASE_USER: # DATABASE_USER
-      DATABASE_PASS: # DATABASE_PASS
-      DATABASE_URI: # DATABASE_URI, example: mongodb://database:27017
+      DATABASE_NAME: "spst-kniznica"
+      DATABASE_USER: "root"
+      DATABASE_PASS: "PETERdinis1234"
+      DATABASE_URI: "mongodb://myUser:myPassword@localhost:27017/spst-kniznica"
     ports:
       - '4000:4000'
     depends_on:
@@ -23,6 +22,5 @@ services:
     restart: always
     ports:
       - '27017:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: # DATABASE_NAME
-      MONGO_INITDB_ROOT_PASSWORD: # DATABASE_USER
+    env_file:
+      - docker.env
