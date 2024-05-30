@@ -60,7 +60,7 @@ export class AuthService {
         }
 
         if (user) {
-            const {...result } = user;
+            const { ...result } = user;
             return result;
         } else {
             throw new UnauthorizedException('Zlé prihlasovacie údaje');
