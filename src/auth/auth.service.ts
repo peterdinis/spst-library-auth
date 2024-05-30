@@ -6,7 +6,8 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user-dto';
 import { compare } from 'bcrypt';
 import * as crypto from 'crypto';
@@ -16,55 +17,47 @@ import { UsersService } from './users.service';
 import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 import { AdminRightsDto } from './dto/admin-rights-dto';
 import { RemoveAccountDto } from './dto/remove-account-dto';
+import { User } from './model/User.model';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly prismaService: PrismaService,
+        @InjectModel(User.name) private userModel: Model<User>,
         private readonly jwtService: JwtService,
         private readonly usersService: UsersService,
     ) {}
 
     async teacherAdminsAll() {
-        const findSpecificUsrs = await this.prismaService.user.findMany({
-            where: {
-                OR: [{ role: TEACHER }, { role: ADMIN }],
-            },
-        });
+        const findSpecificUsers = await this.userModel.find({
+            $or: [{ role: TEACHER }, { role: ADMIN }],
+        }).exec();
 
-        if (!findSpecificUsrs) {
+        if (!findSpecificUsers || findSpecificUsers.length === 0) {
             throw new NotFoundException(
                 'Žiadny učitelia/admini nemajú v applikácií vytvorené učty',
             );
         }
 
-        return findSpecificUsrs;
+        return findSpecificUsers;
     }
 
     async validateUser(loginDto: LoginDto) {
-        const user = await this.prismaService.user.findFirst({
-            where: {
-                email: loginDto.email,
-                AND: {
-                    isActive: {
-                        not: false,
-                    },
-                },
-            },
-        });
+        const user = await this.userModel.findOne({
+            email: loginDto.email,
+            isActive: { $ne: false },
+        }).exec();
 
-        const checkPasswords = compare(loginDto.password, user.password);
+        if (!user) {
+            throw new UnauthorizedException('Zlé prihlasovacie údaje');
+        }
 
+        const checkPasswords = await compare(loginDto.password, user.password);
         if (!checkPasswords) {
             throw new ForbiddenException('Heslá sa nezhodujú');
         }
 
-        if (user) {
-            const { ...result } = user;
-            return result;
-        } else {
-            throw new UnauthorizedException('Zlé prihlasovacie údaje');
-        }
+        const { password, ...result } = user.toObject();
+        return result;
     }
 
     async getAllUsers() {
@@ -84,29 +77,29 @@ export class AuthService {
     }
 
     async createNewUser(registerDto: CreateUserDto) {
-        await this.usersService.findOneByEmail(registerDto.email);
+        const existingUser = await this.usersService.findOneByEmail(registerDto.email);
+        if (existingUser) {
+            throw new ConflictException('Používateľ s týmto emailom už existuje');
+        }
 
         const salt = crypto.randomBytes(16).toString('hex');
-
         const hash = crypto
             .pbkdf2Sync(registerDto.password, salt, 1000, 64, 'sha512')
             .toString('hex');
 
-        const addNewUser = await this.prismaService.user.create({
-            data: {
-                ...registerDto,
-                isActive: true,
-                password: hash,
-            },
+        const newUser = new this.userModel({
+            ...registerDto,
+            isActive: true,
+            password: hash,
         });
 
-        if (!addNewUser) {
+        try {
+            const addNewUser = await newUser.save();
+            const { password, ...result } = addNewUser.toObject();
+            return result;
+        } catch (error) {
             throw new BadRequestException('Nastala chyba pri registrácií');
         }
-
-        const { ...result } = addNewUser;
-
-        return result;
     }
 
     async login(dto: LoginDto) {
@@ -138,11 +131,11 @@ export class AuthService {
         return {
             accessToken: await this.jwtService.signAsync(payload, {
                 expiresIn: '1d',
-                secret: process.env.jwtSecretKey,
+                secret: process.env.JWT_SECRET as unknown as string,
             }),
             refreshToken: await this.jwtService.signAsync(payload, {
                 expiresIn: '7d',
-                secret: process.env.jwtRefreshTokenKey,
+                secret: process.env.JWT_SECRET as unknown as string,
             }),
             expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
         };
@@ -153,11 +146,7 @@ export class AuthService {
             removeAccount.accountId,
         );
 
-        const deleteAccount = await this.prismaService.user.delete({
-            where: {
-                id: findOneAppUser.id,
-            },
-        });
+        const deleteAccount = await this.userModel.findByIdAndDelete(findOneAppUser.id).exec();
 
         if (!deleteAccount) {
             throw new ConflictException('Nepodarilo sa zmazať účet');
@@ -171,15 +160,11 @@ export class AuthService {
             removeAccount.accountId,
         );
 
-        const deactivateAccount = await this.prismaService.user.update({
-            where: {
-                id: findOneAppUser.id,
-            },
-
-            data: {
-                isActive: false,
-            },
-        });
+        const deactivateAccount = await this.userModel.findByIdAndUpdate(
+            findOneAppUser.id,
+            { isActive: false },
+            { new: true }
+        ).exec();
 
         if (!deactivateAccount) {
             throw new ConflictException('Nepodarilo sa deaktivovať účet');
@@ -197,10 +182,11 @@ export class AuthService {
             throw new BadRequestException('Študent nemôže mať admin práva');
         }
 
-        const updatedUser = await this.prismaService.user.update({
-            where: { id: findOneAppUser.id },
-            data: { hasAdminRights: true },
-        });
+        const updatedUser = await this.userModel.findByIdAndUpdate(
+            findOneAppUser.id,
+            { hasAdminRights: true },
+            { new: true }
+        ).exec();
 
         return updatedUser;
     }
@@ -216,14 +202,11 @@ export class AuthService {
             );
         }
 
-        const updateAdminRights = await this.prismaService.user.update({
-            where: {
-                id: findOneAppUser.id,
-            },
-            data: {
-                hasAdminRights: false,
-            },
-        });
+        const updateAdminRights = await this.userModel.findByIdAndUpdate(
+            findOneAppUser.id,
+            { hasAdminRights: false },
+            { new: true }
+        ).exec();
 
         return updateAdminRights;
     }
