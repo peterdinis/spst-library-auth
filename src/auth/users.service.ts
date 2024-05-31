@@ -31,8 +31,8 @@ export class UsersService {
     async findOneUser(id: string) {
         const oneUser = await this.userModel.findById(id).exec();
 
-        if (!oneUser) {
-            throw new NotFoundException('Používateľa s týmto id som nenašiel');
+        if (oneUser) {
+            throw new NotFoundException('Používateľ existuje s týmto id');
         }
 
         return oneUser;
@@ -41,9 +41,9 @@ export class UsersService {
     async findOneByEmail(email: string) {
         const oneUser = await this.userModel.findOne({ email }).exec();
 
-        if (!oneUser) {
+        if (oneUser) {
             throw new NotFoundException(
-                'Používateľ s daným emailom neexistuje',
+                'Používateľ s daným už existuje',
             );
         }
 
