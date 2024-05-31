@@ -28,9 +28,11 @@ export class AuthService {
     ) {}
 
     async teacherAdminsAll() {
-        const findSpecificUsers = await this.userModel.find({
-            $or: [{ role: TEACHER }, { role: ADMIN }],
-        }).exec();
+        const findSpecificUsers = await this.userModel
+            .find({
+                $or: [{ role: TEACHER }, { role: ADMIN }],
+            })
+            .exec();
 
         if (!findSpecificUsers || findSpecificUsers.length === 0) {
             throw new NotFoundException(
@@ -42,10 +44,12 @@ export class AuthService {
     }
 
     async validateUser(loginDto: LoginDto) {
-        const user = await this.userModel.findOne({
-            email: loginDto.email,
-            isActive: { $ne: false },
-        }).exec();
+        const user = await this.userModel
+            .findOne({
+                email: loginDto.email,
+                isActive: { $ne: false },
+            })
+            .exec();
 
         if (!user) {
             throw new UnauthorizedException('Zlé prihlasovacie údaje');
@@ -77,9 +81,13 @@ export class AuthService {
     }
 
     async createNewUser(registerDto: CreateUserDto) {
-        const existingUser = await this.usersService.findOneByEmail(registerDto.email);
+        const existingUser = await this.usersService.findOneByEmail(
+            registerDto.email,
+        );
         if (existingUser) {
-            throw new ConflictException('Používateľ s týmto emailom už existuje');
+            throw new ConflictException(
+                'Používateľ s týmto emailom už existuje',
+            );
         }
 
         const salt = crypto.randomBytes(16).toString('hex');
@@ -146,7 +154,9 @@ export class AuthService {
             removeAccount.accountId,
         );
 
-        const deleteAccount = await this.userModel.findByIdAndDelete(findOneAppUser.id).exec();
+        const deleteAccount = await this.userModel
+            .findByIdAndDelete(findOneAppUser.id)
+            .exec();
 
         if (!deleteAccount) {
             throw new ConflictException('Nepodarilo sa zmazať účet');
@@ -160,11 +170,13 @@ export class AuthService {
             removeAccount.accountId,
         );
 
-        const deactivateAccount = await this.userModel.findByIdAndUpdate(
-            findOneAppUser.id,
-            { isActive: false },
-            { new: true }
-        ).exec();
+        const deactivateAccount = await this.userModel
+            .findByIdAndUpdate(
+                findOneAppUser.id,
+                { isActive: false },
+                { new: true },
+            )
+            .exec();
 
         if (!deactivateAccount) {
             throw new ConflictException('Nepodarilo sa deaktivovať účet');
@@ -182,11 +194,13 @@ export class AuthService {
             throw new BadRequestException('Študent nemôže mať admin práva');
         }
 
-        const updatedUser = await this.userModel.findByIdAndUpdate(
-            findOneAppUser.id,
-            { hasAdminRights: true },
-            { new: true }
-        ).exec();
+        const updatedUser = await this.userModel
+            .findByIdAndUpdate(
+                findOneAppUser.id,
+                { hasAdminRights: true },
+                { new: true },
+            )
+            .exec();
 
         return updatedUser;
     }
@@ -202,11 +216,13 @@ export class AuthService {
             );
         }
 
-        const updateAdminRights = await this.userModel.findByIdAndUpdate(
-            findOneAppUser.id,
-            { hasAdminRights: false },
-            { new: true }
-        ).exec();
+        const updateAdminRights = await this.userModel
+            .findByIdAndUpdate(
+                findOneAppUser.id,
+                { hasAdminRights: false },
+                { new: true },
+            )
+            .exec();
 
         return updateAdminRights;
     }

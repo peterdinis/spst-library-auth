@@ -42,9 +42,7 @@ export class UsersService {
         const oneUser = await this.userModel.findOne({ email }).exec();
 
         if (oneUser) {
-            throw new NotFoundException(
-                'Používateľ s daným už existuje',
-            );
+            throw new NotFoundException('Používateľ s daným už existuje');
         }
 
         return oneUser;
