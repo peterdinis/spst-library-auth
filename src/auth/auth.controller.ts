@@ -41,6 +41,8 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Get('/user/:id')
     async getOneUser(@Param('id') id: string) {
         return this.userService.findOneUser(id);
@@ -52,6 +54,8 @@ export class AuthController {
     @ApiOkResponse({
         type: [ViewUserDto],
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Get('/students')
     async findAllStudents() {
         return this.authService.findAllStudents();
@@ -63,6 +67,8 @@ export class AuthController {
     @ApiOkResponse({
         type: [ViewUserDto],
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Get('/teachers')
     async findAllTeachers() {
         return this.authService.findAllTeachers();
@@ -72,6 +78,8 @@ export class AuthController {
         summary: 'Admin and teachers all',
     })
     @ApiOkResponse()
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Get('/all/teachers/admins')
     async allAdminsAndTeachers() {
         return this.authService.teacherAdminsAll();
@@ -83,6 +91,8 @@ export class AuthController {
     @ApiOkResponse({
         type: [ViewUserDto],
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Get('/admins')
     async findAllAdmins() {
         return this.authService.findAllAdmins();
@@ -94,6 +104,8 @@ export class AuthController {
     @ApiCreatedResponse({
         type: ViewUserDto,
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Post('/register')
     async createNewUser(@Body() registerDto: CreateUserDto) {
         return this.authService.createNewUser(registerDto);
@@ -105,6 +117,8 @@ export class AuthController {
     @ApiCreatedResponse({
         type: LoginDto,
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Post('/login')
     async loginUser(@Body() loginDto: LoginDto) {
         return await this.authService.login(loginDto);
@@ -116,6 +130,8 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Patch('/account/delete')
     async deleteAccount(@Body() removeAccount: RemoveAccountDto) {
         return this.authService.deleteAccount(removeAccount);
@@ -127,6 +143,8 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Patch('/account/deactivate')
     async deactivateAccount(@Body() removeAccount: RemoveAccountDto) {
         return this.authService.deactivateAccount(removeAccount);
@@ -138,6 +156,8 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Patch('/account/make-admin')
     async makeAccountAdmin(@Body() rightsDto: AdminRightsDto) {
         return this.authService.makeAccountAdmin(rightsDto);
@@ -149,6 +169,8 @@ export class AuthController {
     @ApiOkResponse({
         type: ViewUserDto,
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Patch('/account/remove-admin')
     async removeAccountAdmin(@Body() rightsDto: AdminRightsDto) {
         return this.authService.removeAdminRights(rightsDto);
