@@ -1,4 +1,3 @@
-import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 import { NestFactory } from '@nestjs/core';
@@ -6,6 +5,7 @@ import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import helmet from '@fastify/helmet'
 
 async function bootstrap() {
     const app = (await NestFactory.create<NestFastifyApplication>(
@@ -13,9 +13,11 @@ async function bootstrap() {
         new FastifyAdapter({
             logger: true,
         }),
-    )) as INestApplication;
+    ));
 
     app.enableCors();
+    await app.register(helmet);
+
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')
         .setDescription('Autentifikačný server pre projekt SPŠT Knižnica')
