@@ -1,6 +1,6 @@
 {
   "name": "spst-kniznica-auth",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Autentifikačný server pre applikáciu SPŠT Knižnica",
   "author": "pdinis1@gmail.com",
   "private": true,
@@ -43,6 +43,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@fastify/helmet": "^11.1.1",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/config": "^3.2.2",
     "@nestjs/jwt": "^10.2.0",
