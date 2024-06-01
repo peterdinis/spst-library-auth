@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import {
     ApiCreatedResponse,
     ApiOkResponse,
@@ -12,6 +12,7 @@ import { LoginDto } from './dto/login-user-dto';
 import { UsersService } from './users.service';
 import { AdminRightsDto } from './dto/admin-rights-dto';
 import { RemoveAccountDto } from './dto/remove-account-dto';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
@@ -27,6 +28,8 @@ export class AuthController {
     @ApiOkResponse({
         type: [ViewUserDto],
     })
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     @Get('/users')
     async allUsers() {
         return this.authService.getAllUsers();
