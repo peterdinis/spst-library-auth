@@ -1,7 +1,6 @@
 import {
     BadRequestException,
     ConflictException,
-    ForbiddenException,
     Injectable,
     NotFoundException,
     UnauthorizedException,
@@ -17,7 +16,6 @@ import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 import { AdminRightsDto } from './dto/admin-rights-dto';
 import { RemoveAccountDto } from './dto/remove-account-dto';
 import { User } from './model/User.model';
-import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
