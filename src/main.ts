@@ -5,15 +5,15 @@ import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import helmet from '@fastify/helmet'
+import helmet from '@fastify/helmet';
 
 async function bootstrap() {
-    const app = (await NestFactory.create<NestFastifyApplication>(
+    const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter({
             logger: true,
         }),
-    ));
+    );
 
     app.enableCors();
     await app.register(helmet);

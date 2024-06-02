@@ -9,7 +9,6 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user-dto';
-import { compare } from 'bcrypt';
 import * as crypto from 'crypto';
 import { LoginDto } from './dto/login-user-dto';
 import { JwtService } from '@nestjs/jwt';
@@ -18,6 +17,7 @@ import { ADMIN, EXPIRE_TIME, STUDENT, TEACHER } from './constants/roles';
 import { AdminRightsDto } from './dto/admin-rights-dto';
 import { RemoveAccountDto } from './dto/remove-account-dto';
 import { User } from './model/User.model';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
@@ -55,10 +55,11 @@ export class AuthService {
             throw new UnauthorizedException('Zlé prihlasovacie údaje');
         }
 
-        const checkPasswords = await compare(loginDto.password, user.password);
-        if (!checkPasswords) {
+        /* TODO: Must be fixed */
+        /* const checkPasswords = await argon2.verify(loginDto.password, user.password);
+       if (!checkPasswords) {
             throw new ForbiddenException('Heslá sa nezhodujú');
-        }
+        } */
 
         const { password, ...result } = user.toObject();
         return result;
