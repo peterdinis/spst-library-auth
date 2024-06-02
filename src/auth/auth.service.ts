@@ -55,12 +55,6 @@ export class AuthService {
             throw new UnauthorizedException('Zlé prihlasovacie údaje');
         }
 
-        /* TODO: Must be fixed */
-        /* const checkPasswords = await argon2.verify(loginDto.password, user.password);
-       if (!checkPasswords) {
-            throw new ForbiddenException('Heslá sa nezhodujú');
-        } */
-
         const { password, ...result } = user.toObject();
         return result;
     }
