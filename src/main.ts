@@ -16,6 +16,8 @@ async function bootstrap() {
 
     app.enableCors();
 
+    const PORT = process.env.PORT as unknown as number || 4000;
+
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')
         .setDescription('Autentifikačný server pre projekt SPŠT Knižnica')
@@ -24,6 +26,6 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
-    await app.listen(4000);
+    await app.listen(PORT, '0.0.0.0');
 }
 bootstrap();
