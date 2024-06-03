@@ -5,7 +5,6 @@ import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import helmet from '@fastify/helmet';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,7 +15,6 @@ async function bootstrap() {
     );
 
     app.enableCors();
-    await app.register(helmet);
 
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')
