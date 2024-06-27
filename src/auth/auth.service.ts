@@ -53,7 +53,7 @@ export class AuthService {
             throw new UnauthorizedException('Zlé prihlasovacie údaje');
         }
 
-        const { password, ...result } = user.toObject();
+        const { ...result } = user.toObject();
         return result;
     }
 
@@ -96,7 +96,7 @@ export class AuthService {
 
         try {
             const addNewUser = await newUser.save();
-            const { password, ...result } = addNewUser.toObject();
+            const { ...result } = addNewUser.toObject();
             return result;
         } catch (error) {
             throw new BadRequestException('Nastala chyba pri registrácií');

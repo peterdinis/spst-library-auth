@@ -16,7 +16,7 @@ async function bootstrap() {
 
     app.enableCors();
 
-    const PORT = process.env.PORT as unknown as number || 4000;
+    const PORT = (process.env.PORT as unknown as number) || 4000;
 
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')
