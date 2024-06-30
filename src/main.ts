@@ -21,6 +21,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
         .setTitle('Spšt Knižnica Autentifikačný server')
         .setDescription('Autentifikačný server pre projekt SPŠT Knižnica')
+        .addBearerAuth()
         .setVersion('1.0')
         .build();
 

@@ -103,6 +103,10 @@ export class AuthService {
         }
     }
 
+    async profileInfo(userId: string) {
+        return this.usersService.findOneUser(userId);
+    }
+
     async login(dto: LoginDto) {
         const user = await this.validateUser(dto);
 

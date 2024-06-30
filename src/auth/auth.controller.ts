@@ -8,6 +8,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import {
+    ApiBearerAuth,
     ApiCreatedResponse,
     ApiOkResponse,
     ApiOperation,
@@ -21,6 +22,7 @@ import { UsersService } from './users.service';
 import { AdminRightsDto } from './dto/admin-rights-dto';
 import { RemoveAccountDto } from './dto/remove-account-dto';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { JwtAuthGuard } from './guards/jwt-guard';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
@@ -93,6 +95,16 @@ export class AuthController {
         return this.authService.teacherAdminsAll();
     }
 
+    @ApiOperation({
+        summary: 'Profile',
+    })
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse()
+    @ApiBearerAuth()
+    @Get("/profile/:userId")
+    async getUserProfile(@Param('userId') userId: string) {
+        return this.authService.profileInfo(userId);
+    }
     @ApiOperation({
         summary: 'Get all admins',
     })
